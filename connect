@@ -1,0 +1,154 @@
+#!/usr/bin/env python3
+
+
+# import io
+# import pathlib
+# import re
+# import subprocess
+
+import os
+import sys
+from argparse import ArgumentParser
+from urllib.request import urlopen, urlretrieve
+
+# from zipfile import ZipFile
+
+# TODO Can probably get around needing to install remote packages
+# by using "urllib.request" instead (urlopen, urlretrieve)
+
+# import requests
+# import urllib3
+
+
+def get_libraries(address: str) -> None:
+
+    data = {
+        'linux': {
+            'platform': 'Linux64',
+            'dynlibex': '.so',
+            'binaryex': str()
+        },
+        'win': {
+            'platform': 'Win64',
+            'dynlibex': '.dll',
+            'binaryex': '.exe'
+        },
+        'darwin': {
+            'platform': 'Mac64',
+            'dynlibex': '.jnilib',
+            'binaryex': str()
+        }
+    }
+
+    # Figure out which libraries we need to pull from our server
+
+    for system in data:
+        if sys.platform.startswith(system):
+
+            names = (
+                'avctVM{}'.format(data[system]['platform']),
+                'avctKVMIO{}'.format(data[system]['platform']),
+                'avctKVM'
+            )
+
+            for name in names:
+                url = 'http://{}/software/{}.jar'.format(address, name)
+
+                # Check if the files exist
+
+                try:
+                    urlopen(url)
+                except Exception:
+                    print('Something went wrong reading server files!')
+                    raise
+
+                base = os.path.basename(url)
+                path = 'lib/{}'.format(base)
+
+                if not os.path.exists(path):
+                    print('Downloading: {}'.format(base))
+                    urlretrieve(url, path)
+
+            # If we got here, all of our files exist!
+
+            # Note: Our ".jar" files are actually zip archives (use ZipFile)
+
+            oof = ''
+
+
+'''
+    response = requests.get(url)
+
+    url = urllib3.util.parse_url(args.host)
+    args.host = url.host
+
+    if url.port:
+        args.port = url.port
+    else:
+        args.port = 5900
+
+    pwd = pathlib.Path(sys.path[0])
+
+    # Hostdir is a striped version of host, because some chars can avoid LD load within java - as example IPv6 address with []
+    hostdir = pwd.joinpath('host_' + re.sub('[^a-zA-Z0-9]+', '', args.host))
+    java = pwd.joinpath('jre').joinpath('bin').joinpath('java' + BINARYEX)
+
+    libdir = hostdir.joinpath('lib')
+    libdir.mkdir(parents=True, exist_ok=True)
+
+    get_libraries(url=avctvm_url, path=libdir)
+    get_libraries(url=avctkvmio_url, path=libdir)
+
+    print('Downloading: avctKVM.jar')
+    response = requests.get(avctkvm_url)
+
+    with open('avctKVM.jar', 'w+b') as file:
+        file.write(response.content)
+
+    with ZipFile(file=io.BytesIO(response.content)) as f:
+
+        for member in f.infolist():
+
+            if member.filename.endswith(DYNLIBEX):
+                print('Extracting: ' + member.filename)
+                f.extract(member, path=path)
+'''
+
+
+def main() -> None:
+    parser = ArgumentParser(
+        description='iDRAC 6 Virtual Console Launcher'
+    )
+
+    parser.add_argument('--test', action='store_true')
+
+    args = parser.parse_args()
+
+    if args.test:
+        pass
+    else:
+        sys.exit(parser.print_help(sys.stderr))
+
+
+'''
+    if java.exists():
+        subprocess.run([
+            str(java.absolute()),
+            '-cp',
+            'avctKVM.jar',
+            '-Djava.library.path={}'.format(libdir),
+            'com.avocent.idrac.kvm.Main',
+            'ip={}'.format(args.host),
+            'kmport={}'.format(args.port),
+            'vport={}'.format(args.port),
+            'user={}'.format(args.user),
+            'passwd={}'.format(args.passwd),
+            'apcp=1',
+            'version=2',
+            'vmprivilege=true',
+            '"helpurl=https://{}/help/contents.html"'.format(args.host)
+        ])
+'''
+
+if __name__ == '__main__':
+    main()
