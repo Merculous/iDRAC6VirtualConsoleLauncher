@@ -6,16 +6,19 @@ import pathlib
 import re
 import subprocess
 import sys
-import zipfile
 from argparse import ArgumentParser
+from zipfile import ZipFile
 
 import requests
 import urllib3
 
 
-def get_libraries(url, path):
+# TODO Replace "zip" as this is a built-in function
+# So, rename it to something else
+
+def get_libraries(url: str, path: str) -> None:
     response = requests.get(url)
-    with zipfile.ZipFile(file=io.BytesIO(response.content)) as zip:
+    with ZipFile(file=io.BytesIO(response.content)) as zip:
         for member in zip.infolist():
             if member.filename.endswith(DYNLIBEX):
                 print('Extracting: ' + member.filename)
