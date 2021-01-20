@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 
 
-import argparse
-import zipfile
-import requests
 import io
 import pathlib
-import sys
-import urllib3
-import subprocess
 import re
+import subprocess
+import sys
+import zipfile
+from argparse import ArgumentParser
+
+import requests
+import urllib3
+
 
 def get_libraries(url, path):
     response = requests.get(url)
@@ -20,22 +22,52 @@ def get_libraries(url, path):
                 zip.extract(member, path=path)
 
 
-def main():
-    parser = argparse.ArgumentParser(description='iDRAC 6 Virtual Console Launcher')
-    parser.add_argument('-u', '--user', type=str, default='root', action='store', help='iDRAC username [root]')
-    parser.add_argument('-p', '--passwd', type=str, default='calvin', action='store', help='iDRAC password [calvin]')
-    parser.add_argument('host', metavar='HOST[:PORT]', action='store', help='host running iDRAC 6 [port:5900]')
+def main() -> None:
+    parser = ArgumentParser(
+        description='iDRAC 6 Virtual Console Launcher'
+    )
+
+    parser.add_argument(
+        '-u',
+        '--user',
+        type=str,
+        default='root',
+        action='store',
+        help='iDRAC username [root]'
+    )
+
+    parser.add_argument(
+        '-p',
+        '--passwd',
+        type=str,
+        default='calvin',
+        action='store',
+        help='iDRAC password [calvin]'
+    )
+
+    parser.add_argument(
+        'host',
+        metavar='HOST[:PORT]',
+        action='store',
+        help='host running iDRAC 6 [port:5900]'
+    )
+
     args = parser.parse_args()
 
     url = urllib3.util.parse_url(args.host)
     args.host = url.host
+
     if url.port:
         args.port = url.port
     else:
         args.port = 5900
 
-    avctvm_url = 'http://{0}/software/avctVM{1}.jar'.format(args.host, PLATFORM)
-    avctkvmio_url = 'http://{0}/software/avctKVMIO{1}.jar'.format(args.host, PLATFORM)
+    avctvm_url = 'http://{0}/software/avctVM{1}.jar'.format(
+        args.host, PLATFORM)
+
+    avctkvmio_url = 'http://{0}/software/avctKVMIO{1}.jar'.format(
+        args.host, PLATFORM)
+
     avctkvm_url = 'http://{0}/software/avctKVM.jar'.format(args.host)
 
     pwd = pathlib.Path(sys.path[0])
