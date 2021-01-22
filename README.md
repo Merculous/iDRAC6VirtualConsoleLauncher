@@ -27,33 +27,22 @@ iDRAC6VirtualConsoleLauncher
 ├── iDRAC6VirtualConsoleLauncher.py
 ├── jre
 │   ├── bin
-│   │   └── java.exe
+│   │   └── java.exe # Unix systems just need "java"
 │   └── ...
-|
-├── requirements.txt
 └── README.md
 ```
 
-Install dependencies:
-
-`pip3 install -r requirements.txt`
-
-or use (Linux) distribution packages:
-
-`apt install python3-requests`
-
 ## Usage
+
 ```
-usage: iDRAC6VirtualConsoleLauncher.py [-h] [-u USER] [-p PASSWD] HOST[:PORT]
+usage: iDRAC6VirtualConsoleLauncher.py [-h] [--username] [--password] [--address] [--port]
 
 iDRAC 6 Virtual Console Launcher
 
-positional arguments:
-  HOST[:PORT]           host running iDRAC 6 [port:5900]
-
 optional arguments:
-  -h, --help            show this help message and exit
-  -u USER, --user USER  iDRAC username [root]
-  -p PASSWD, --passwd PASSWD
-                        iDRAC password [calvin]
+  -h, --help    show this help message and exit
+  --username 
+  --password 
+  --address 
+  --port
 ```
