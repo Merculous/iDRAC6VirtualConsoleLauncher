@@ -113,14 +113,14 @@ def main() -> None:
     parser.add_argument('--username', nargs=1, type=str, metavar='\b')
     parser.add_argument('--password', nargs=1, type=str, metavar='\b')
     parser.add_argument('--address', nargs=1, type=str, metavar='\b')
-    parser.add_argument('--port', nargs=1, type=str, metavar='\b')
+    parser.add_argument('--port', nargs=1, type=int, metavar='\b')
 
     args = parser.parse_args()
 
     if args.username and args.password and args.address:
 
         if args.port:
-            port = args.port
+            port = args.port[0]
         else:
             port = 5900
 
